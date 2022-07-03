@@ -22,14 +22,25 @@ export function Home() {
   const [mySkills, setMySkills] = useState<SkillData[]>([]);
   const [greetings, setGreetings] = useState('');
   function handleAddNewSkill(){
-    const data = {
+    var data: SkillData = {
       id: String(new Date().getTime()),
-      name: newSkill,
+      name: String(newSkill),
     }
-    setMySkills(oldState => [...oldState, newSkill]);
+  
+    console.log(newSkill)
+    //console.log(newSkill?.name)
+    
+    setMySkills(oldState => [...oldState, data]);
     //setNewSkill();
     //this.newSkillInput.focus();
   }
+
+  function handleRemoveSkill(id: String){
+    setMySkills(oldSkills => oldSkills.filter(
+      skill => skill.id != id
+    ))
+  }
+
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) {
@@ -39,7 +50,7 @@ export function Home() {
     } else if (hour < 23) {
       setGreetings('Boa noite');
     }
-    console.log('UseEffect executado');
+    //console.log( ...mySkills );
   }, [mySkills]);
   return (
     <Fragment>
@@ -55,13 +66,13 @@ export function Home() {
           placeholderTextColor="#156899"
           onChangeText={setNewSkill}
         />
-        <Button onPress={handleAddNewSkill} />
+        <Button title="Add" onPress={handleAddNewSkill} />
         {/*<Text style={([styles.buttonText], {marginTop: 20})}>{mySkills}</Text>*/}
 
         <FlatList
           data={mySkills}
           keyExtractor={item => item.id}
-          renderItem={({item}) => <SkillCard skill={item} />}
+          renderItem={({item}) => <SkillCard skill={item.name} onPress={() => handleRemoveSkill(item.id)} />}
         />
       </SafeAreaView>
     </Fragment>
